@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "20ea7c19-cdc6-4b2a-8582-f5bf32fa9f07",
+		"name": "Soap Services",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19086718"
+	},
+	"item": [
+		{
+			"name": "NumberToWord",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const number = pm.variables.replaceIn('{{$randomInt}}');\r",
+							"pm.collectionVariables.set(\"num\", number);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = xml2Json(pm.response.text());\r",
+							"console.log(responseJson)\r",
+							"const actualResult = responseJson[\"soap:Envelope\"][\"soap:Body\"][\"m:NumberToWordsResponse\"][\"m:NumberToWordsResult\"];\r",
+							"pm.collectionVariables.set(\"val\", actualResult);\r",
+							"// 1st Test\r",
+							"pm.test(\"Verifing the result\", ()=>{\r",
+							"    pm.expect(pm.collectionVariables.get(\"num\")).to.be.eql(pm.collectionVariables.get(\"val\"))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/soap+xml; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap12:Envelope xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <NumberToWords xmlns=\"http://www.dataaccess.com/webservicesserver/\">\r\n      <ubiNum>{{num}}</ubiNum>\r\n    </NumberToWords>\r\n  </soap12:Body>\r\n</soap12:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{soap_url}}/NumberConversion.wso",
+					"host": [
+						"{{soap_url}}"
+					],
+					"path": [
+						"NumberConversion.wso"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NumberToDollars",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const number = pm.variables.replaceIn('{{$randomInt}}');\r",
+							"pm.collectionVariables.set(\"num\", number);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = xml2Json(pm.response.text());\r",
+							"console.log(responseJson)\r",
+							"const actualResult = responseJson[\"soap:Envelope\"][\"soap:Body\"][\"m:NumberToDollarsResponse\"][\"m:NumberToDollarsResult\"];\r",
+							"pm.collectionVariables.set(\"val\", actualResult);\r",
+							"// 1st Test\r",
+							"pm.test(\"Verify the status code\", ()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"// 2nd Test\r",
+							"pm.test(\"Verifing the result\", ()=>{\r",
+							"    pm.expect(actualResult).to.be.eql(pm.collectionVariables.get(\"val\"))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/soap+xml; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap12:Envelope xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <NumberToDollars xmlns=\"http://www.dataaccess.com/webservicesserver/\">\r\n      <dNum>{{num}}</dNum>\r\n    </NumberToDollars>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+				},
+				"url": {
+					"raw": "{{soap_url}}/NumberConversion.wso",
+					"host": [
+						"{{soap_url}}"
+					],
+					"path": [
+						"NumberConversion.wso"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "num",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "val",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
